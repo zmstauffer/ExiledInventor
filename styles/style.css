@@ -1,0 +1,34 @@
+:root {
+  --squareSize: 8px;
+  --playerSpace: 1px;
+}
+
+.player {
+  position: absolute;
+  width: calc(var(--squareSize) - var(--playerSpace));
+  height: calc(var(--squareSize) - var(--playerSpace));
+  z-index: 1;
+  border-radius: 50%;
+  background: blue;
+}
+
+.square {
+  position: absolute;
+  width: var(--squareSize);
+  height: var(--squareSize);
+  z-index: 0;
+}
+
+.wall {
+  background: black;
+}
+
+.walkway {
+  background: white;
+}
+
+.fog {
+  display: block;
+  background: black;
+  z-index: 2;
+}
