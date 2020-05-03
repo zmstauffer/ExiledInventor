@@ -31,4 +31,6 @@
   display: block;
   background: black;
   z-index: 2;
+  width: calc(var(--squareSize) / 2);
+  height: calc(var(--squareSize) / 2);
 }
