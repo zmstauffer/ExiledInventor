@@ -59,6 +59,7 @@ let offsetY = height - lightMaskHeight;
 for (let y = 0; y < lightMaskHeight; y++) {
   for (let x = 0; x < lightMaskWidth; x++) {
     let maskSquare = document.createElement("div");
+    maskSquare.id = `fog${x}${y}`;
     maskSquare.classList.add("square", "fog");
     maskSquare.style.left = (x + offsetX) * fogSquareSize + "px";
     maskSquare.style.top = (y + offsetY) * fogSquareSize + "px";
@@ -111,12 +112,29 @@ window.addEventListener("keydown", function (event) {
       }
       break;
   }
+  console.log(playerPos);
 });
 
 function mainLoop() {
   player.style.left = playerPos.x * squareSize + playerSpace / 2 + "px";
   player.style.top = playerPos.y * squareSize + playerSpace / 2 + "px";
+
+  computeLightMask();
+
   requestAnimationFrame(mainLoop);
+}
+
+function computeLightMask() {
+  let offsetX = playerPos.x - 3; // - lightMaskWidth;
+  let offsetY = playerPos.y - 5; // - lightMaskHeight;
+  for (let y = 0; y < lightMaskHeight; y++) {
+    for (let x = 0; x < lightMaskWidth; x++) {
+      let maskSquare = document.getElementById(`fog${x}${y}`);
+      maskSquare.style.left = (playerPos.x - 3 + x) * fogSquareSize + "px";
+      maskSquare.style.top = (playerPos.y - 4 + y) * fogSquareSize + "px";
+      let type = lightMaskArray[x][y];
+    }
+  }
 }
 
 mainLoop();
