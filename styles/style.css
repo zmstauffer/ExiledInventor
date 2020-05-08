@@ -34,3 +34,9 @@
   width: calc(var(--squareSize) / 2);
   height: calc(var(--squareSize) / 2);
 }
+
+.outerMask {
+  position: fixed;
+  background: black;
+  z-index: 2;
+}

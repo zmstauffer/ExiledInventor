@@ -59,7 +59,7 @@ let offsetY = height - lightMaskHeight;
 for (let y = 0; y < lightMaskHeight; y++) {
   for (let x = 0; x < lightMaskWidth; x++) {
     let maskSquare = document.createElement("div");
-    maskSquare.id = `fog${x}${y}`;
+    maskSquare.id = `fog${x}_${y}`;
     maskSquare.classList.add("square", "fog");
     maskSquare.style.left = (x + offsetX) * fogSquareSize + "px";
     maskSquare.style.top = (y + offsetY) * fogSquareSize + "px";
@@ -78,6 +78,47 @@ for (let y = 0; y < lightMaskHeight; y++) {
   }
 }
 
+//create black mask around light
+let leftMask = document.createElement("div");
+leftMask.id = "leftMask";
+leftMask.classList.add("outerMask");
+leftMask.style.left = "0px";
+leftMask.style.top = "0px";
+leftMask.style.height = window.innerHeight + "px";
+leftMask.style.width = "50px";
+leftMask.style.position = "absolute";
+document.body.appendChild(leftMask);
+
+let topMask = document.createElement("div");
+topMask.id = "topMask";
+topMask.classList.add("outerMask");
+topMask.style.left = "0px";
+topMask.style.top = "0px";
+topMask.style.height = "50px";
+topMask.style.width = lightMaskWidth * fogSquareSize + "px";
+topMask.style.position = "absolute";
+document.body.appendChild(topMask);
+
+let rightMask = document.createElement("div");
+rightMask.id = "rightMask";
+rightMask.classList.add("outerMask");
+rightMask.style.left = (playerPos.x + 9) * fogSquareSize + "px";
+rightMask.style.top = "0 px";
+rightMask.style.height = window.innerHeight + "px";
+rightMask.style.width = window.innerWidth - (playerPos.x + 7) * fogSquareSize + "px";
+rightMask.style.position = "absolute";
+document.body.appendChild(rightMask);
+
+let bottomMask = document.createElement("div");
+bottomMask.id = "bottomMask";
+bottomMask.classList.add("outerMask");
+bottomMask.style.left = "0 px";
+bottomMask.style.top = (playerPos.x + 9) * fogSquareSize + "px";
+bottomMask.style.height = window.innerHeight + "px";
+bottomMask.style.width = lightMaskWidth * fogSquareSize + "px";
+bottomMask.style.position = "absolute";
+document.body.appendChild(bottomMask);
+
 //make player
 let player = document.createElement("div");
 player.classList.add("player");
@@ -95,24 +136,27 @@ window.addEventListener("keydown", function (event) {
       if (levelArray[x - 1][y] !== 1) {
         playerPos.x--;
       }
+      event.preventDefault();
       break;
     case 38: //up
       if (levelArray[x][y - 1] !== 1) {
         playerPos.y--;
       }
+      event.preventDefault();
       break;
     case 39: //right
       if (levelArray[x + 1][y] !== 1) {
         playerPos.x++;
       }
+      event.preventDefault();
       break;
     case 40: //down
       if (levelArray[x][y + 1] !== 1) {
         playerPos.y++;
       }
+      event.preventDefault();
       break;
   }
-  console.log(playerPos);
 });
 
 function mainLoop() {
@@ -125,16 +169,34 @@ function mainLoop() {
 }
 
 function computeLightMask() {
-  let offsetX = playerPos.x - 3; // - lightMaskWidth;
-  let offsetY = playerPos.y - 5; // - lightMaskHeight;
+  let offsetX = playerPos.x * squareSize; // - lightMaskWidth;
+  let offsetY = playerPos.y * squareSize; // - lightMaskHeight;
   for (let y = 0; y < lightMaskHeight; y++) {
     for (let x = 0; x < lightMaskWidth; x++) {
-      let maskSquare = document.getElementById(`fog${x}${y}`);
-      maskSquare.style.left = (playerPos.x - 3 + x) * fogSquareSize + "px";
-      maskSquare.style.top = (playerPos.y - 4 + y) * fogSquareSize + "px";
+      let maskSquare = document.getElementById(`fog${x}_${y}`);
+      maskSquare.style.left = offsetX + (x - 6) * fogSquareSize + "px";
+      maskSquare.style.top = offsetY + (y - 6) * fogSquareSize + "px";
       let type = lightMaskArray[x][y];
     }
   }
+
+  //update surrounding dark mask
+  let leftMask = document.getElementById("leftMask");
+  let topMask = document.getElementById("topMask");
+  let rightMask = document.getElementById("rightMask");
+  let bottomMask = document.getElementById("bottomMask");
+
+  leftMask.style.width = offsetX - 6 * fogSquareSize + "px";
+
+  topMask.style.left = offsetX - 6 * fogSquareSize + "px";
+  topMask.style.height = offsetY - 6 * fogSquareSize + "px";
+
+  rightMask.style.left = offsetX + fogSquareSize * 7 + "px";
+  rightMask.style.width = window.innerWidth - offsetX - fogSquareSize * 7 - 500 + "px";
+
+  bottomMask.style.left = offsetX - 6 * fogSquareSize + "px";
+  bottomMask.style.top = offsetY + 8 * fogSquareSize + "px";
+  //console.log(window.innerWidth);
 }
 
 mainLoop();
